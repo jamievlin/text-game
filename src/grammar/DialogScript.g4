@@ -1,5 +1,9 @@
 grammar DialogScript;
 
+options {
+    language=Python3;
+}
+
 WHITESPACE: [ \t\r\n]+ -> skip;
 
 fragment CHARACTER: [a-zA-Z];
