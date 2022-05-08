@@ -310,4 +310,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+src/generated/*
+
 # End of https://www.toptal.com/developers/gitignore/api/python,intellij,linux,windows
