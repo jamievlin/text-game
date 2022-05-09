@@ -13,5 +13,3 @@ class DialogScriptVMContext:
 
     def pop(self):
         self.mem_stack.pop()
-
-

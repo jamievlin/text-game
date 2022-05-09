@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-from .DialogScriptInstructions import *
-from .DialogScriptVMContext import DialogScriptVMContext
+from . import instructions as inst
+from .vm_context import DialogScriptVMContext
 
 
 class DialogScriptBlock:
-    def __init__(self, instructions: list[DialogScriptInstruction]):
+    def __init__(self, instructions: list[inst.DialogScriptInstruction]):
         self._instructions = instructions
 
     @property
@@ -14,8 +14,7 @@ class DialogScriptBlock:
 
 class DialogScriptProgram:
     def __init__(self, modules: list[tuple[str, DialogScriptBlock]]):
-        self.modules: dict[str, DialogScriptBlock] = \
-            {key: val for key, val in modules}
+        self.modules: dict[str, DialogScriptBlock] = dict(modules)
 
 
 class DialogScriptVM:
@@ -31,31 +30,30 @@ class DialogScriptVM:
                 if self.context.module == self._last_block:
                     return
                 raise NotImplementedError('Implement module fallthrough!')
-            inst = blk.instructions[self.context.instruction_ptr]
+            instr = blk.instructions[self.context.instruction_ptr]
             self.context.instruction_ptr += 1
 
-            inst.execute(self.context)
+            instr.execute(self.context)
 
 
 def main():
     dsb = DialogScriptBlock([
-        DialogScriptSaysInst('sarah', 'hello traveler'),
-        DialogScriptOptInst([
-            DialogOption(1, "hello sarah"),
-            DialogOption(2, "i'll be going")
+        inst.DialogScriptSaysInst('sarah', 'hello traveler'),
+        inst.DialogScriptOptInst([
+            inst.DialogOption(1, "hello sarah"),
+            inst.DialogOption(2, "i'll be going")
         ]),
-        DialogScriptGotoInst(4),
-        DialogScriptGotoInst(6),
-        DialogScriptSaysInst('sarah', 'hello traveler again'),
-        DialogScriptGotoInst(8),
-        DialogScriptExitInst(),
-        DialogScriptGotoInst(8),
-        DialogScriptSaysInst('sarah', 'goodbye'),
+        inst.DialogScriptGotoInst(4),
+        inst.DialogScriptGotoInst(6),
+        inst.DialogScriptSaysInst('sarah', 'hello traveler again'),
+        inst.DialogScriptGotoInst(8),
+        inst.DialogScriptExitInst(),
+        inst.DialogScriptGotoInst(8),
+        inst.DialogScriptSaysInst('sarah', 'goodbye'),
     ])
-    dp = DialogScriptProgram([('start', dsb)])
-    ds = DialogScriptVM(dp)
-    ds.execute()
-    pass
+    dpr = DialogScriptProgram([('start', dsb)])
+    dsc = DialogScriptVM(dpr)
+    dsc.execute()
 
 
 if __name__ == '__main__':

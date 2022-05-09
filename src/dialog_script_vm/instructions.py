@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
-from .DialogScriptVMContext import DialogScriptVMContext
 import typing as ty
+from .vm_context import DialogScriptVMContext
 
 
 class DialogOption:
@@ -33,7 +33,7 @@ class DialogScriptExitInst(DialogScriptInstruction):
 
 
 class DialogScriptGotoModuleInst(DialogScriptInstruction):
-    def __init__(self, module, *args, **kwargs):
+    def __init__(self, module):
         self.module = module
 
     def execute(self, prog: DialogScriptVMContext):
@@ -42,7 +42,7 @@ class DialogScriptGotoModuleInst(DialogScriptInstruction):
 
 
 class DialogScriptGotoInst(DialogScriptInstruction):
-    def __init__(self, instruction_ptr, *args, **kwargs):
+    def __init__(self, instruction_ptr):
         self.instruction_ptr = instruction_ptr
 
     def execute(self, prog: DialogScriptVMContext):
