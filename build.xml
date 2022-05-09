@@ -7,8 +7,21 @@
 
     <property name="dialogScript.output" value="${src.generated}/dialog_script" />
 
+    <target name="configure">
+        <exec executable="${python3.exec}"
+              failonerror="true">
+            <arg value="configure.py" />
+            <arg value="--antlr4-jar=${antlr4.jar}" />
+            <arg value="--python3-exec=${python3.exec}"/>
+        </exec>
+    </target>
+
     <target name="clean">
         <delete dir="${src.generated}" />
+    </target>
+
+    <target name="clean-all" depends="clean">
+        <delete file="build.local.properties" />
     </target>
 
     <target name="generate-sources">
