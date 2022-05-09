@@ -6,6 +6,7 @@ disable = [
     'no-else-return',
     'too-few-public-methods',
     'trailing-comma-tuple',
+    'trailing-newlines'
 ]
 
 [tool.isort]
