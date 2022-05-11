@@ -6,8 +6,12 @@ from .vm_context import DialogScriptVMContext
 
 
 class DialogScriptBlock:
-    def __init__(self, instructions: list[inst.DialogScriptInstruction]):
-        self._instructions = instructions
+    def __init__(
+            self,
+            instructions: ty.Optional[
+                list[inst.DialogScriptInstruction]] = None
+    ):
+        self._instructions = instructions or []
 
     @property
     def instructions(self):
