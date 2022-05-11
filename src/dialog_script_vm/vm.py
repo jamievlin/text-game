@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import typing as ty
+
 from . import instructions as inst
 from .vm_context import DialogScriptVMContext
 
@@ -10,6 +12,15 @@ class DialogScriptBlock:
     @property
     def instructions(self):
         return self._instructions
+
+    def add_instruction(self, instruction: inst.DialogScriptInstruction):
+        self._instructions.append(instruction)
+
+    def add_instructions(
+            self,
+            instructions: ty.Iterable[inst.DialogScriptInstruction]
+    ):
+        self._instructions.extend(instructions)
 
 
 class DialogScriptProgram:
