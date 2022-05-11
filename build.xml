@@ -38,6 +38,10 @@
         <touch file="${dialogScript.output}/__init__.py" />
     </target>
 
+    <target name="regen-sources" depends="clean" >
+        <antcall target="generate-sources" />
+    </target>
+
     <target name="lint">
         <exec
                 executable="${python3.exec}"
