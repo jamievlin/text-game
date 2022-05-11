@@ -70,16 +70,23 @@ option
     | option_single_stm
     ;
 
-options:
+opts:
     BEGIN OPTIONS
     (option STM_END)+
     END;
 
-statement: (goto|say|options|NOP|EXIT);
+statement
+    : goto
+    | say
+    | opts
+    | NOP
+    | EXIT
+    ;
 
 block:
     BEGIN BLOCK IDENTIFIER
     (statement STM_END)*
     END STM_END;
+
 
 root: block+ EOF;
