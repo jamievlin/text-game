@@ -42,11 +42,19 @@ class DialogScriptGotoModuleInst(DialogScriptInstruction):
 
 
 class DialogScriptGotoInst(DialogScriptInstruction):
-    def __init__(self, instruction_ptr):
+    def __init__(self, instruction_ptr: int):
         self.instruction_ptr = instruction_ptr
 
     def execute(self, prog: DialogScriptVMContext):
         prog.instruction_ptr = self.instruction_ptr
+
+
+class DialogScriptGotoOffsetInst(DialogScriptInstruction):
+    def __init__(self, offset: int):
+        self.offset = offset
+
+    def execute(self, prog: DialogScriptVMContext):
+        prog.instruction_ptr += self.offset
 
 
 class DialogScriptNop(DialogScriptInstruction):
