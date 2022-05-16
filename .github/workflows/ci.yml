@@ -29,5 +29,7 @@ jobs:
           python3 configure.py \
             --python3-exec=$(which python3) \
             --antlr4-jar=/tmp/antlr-4.10.1-complete.jar
+      - name: codegen
+        run: ant generate-sources
       - name: lint
         run: ant lint
