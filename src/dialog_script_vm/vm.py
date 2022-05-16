@@ -6,6 +6,8 @@ from .vm_context import DialogScriptVMContext
 
 
 class DialogScriptBlock:
+    _T = ty.TypeVar('_T', bound='DialogScriptBlock')
+
     def __init__(
             self,
             instructions: ty.Optional[
@@ -25,6 +27,9 @@ class DialogScriptBlock:
             instructions: ty.Iterable[inst.DialogScriptInstruction]
     ):
         self._instructions.extend(instructions)
+
+    def extend_dsb(self, dsb: _T):
+        self._instructions.extend(dsb.instructions)
 
 
 class DialogScriptProgram:
