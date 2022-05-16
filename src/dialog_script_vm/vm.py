@@ -49,28 +49,3 @@ class DialogScriptVM:
             self.context.instruction_ptr += 1
 
             instr.execute(self.context)
-
-
-def main():
-    dsb = DialogScriptBlock([
-        inst.DialogScriptSaysInst('sarah', 'hello traveler'),
-        inst.DialogScriptOptInst([
-            inst.DialogOption(1, "hello sarah"),
-            inst.DialogOption(2, "i'll be going")
-        ]),
-        inst.DialogScriptGotoInst(4),
-        inst.DialogScriptGotoInst(6),
-        inst.DialogScriptSaysInst('sarah', 'hello traveler again'),
-        inst.DialogScriptGotoInst(8),
-        inst.DialogScriptExitInst(),
-        inst.DialogScriptGotoInst(8),
-        inst.DialogScriptSaysInst('sarah', 'goodbye'),
-    ])
-    dpr = DialogScriptProgram([('start', dsb)])
-    dsc = DialogScriptVM(dpr)
-    dsc.execute()
-
-
-if __name__ == '__main__':
-    # main()
-    pass
