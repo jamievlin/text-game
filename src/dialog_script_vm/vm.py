@@ -33,8 +33,15 @@ class DialogScriptBlock:
 
 
 class DialogScriptProgram:
-    def __init__(self, modules: list[tuple[str, DialogScriptBlock]]):
+    def __init__(
+            self,
+            modules: list[tuple[str, DialogScriptBlock]] = None,
+            globalvar_init: list = None
+    ):
+        modules = modules or []
+        globalvar_init = globalvar_init or []
         self.modules: dict[str, DialogScriptBlock] = dict(modules)
+        self.globalvar_init = globalvar_init
 
 
 class DialogScriptVM:

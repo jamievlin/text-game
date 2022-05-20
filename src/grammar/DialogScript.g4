@@ -36,6 +36,10 @@ NOP: 'nop';
 GOTO: 'goto';
 EXIT: 'exit';
 
+LET: 'let';
+
+EQ_ASSIGN: '=';
+
 // string literals
 INIT_IDENTIFIER_CHAR: CHARACTER | UNDERSCORE;
 fragment STRING_ML: '"""' STRING_ML_CHARCTER+ '"""';
@@ -88,5 +92,18 @@ block:
     (statement STM_END)*
     END STM_END;
 
+literal: NUMBERS | STRING_LIT;
 
-root: block+ EOF;
+vardecs:
+    LET IDENTIFIER
+    ;
+
+litvardecs:
+    LET IDENTIFIER (EQ_ASSIGN literal)? STM_END;
+
+global_stm
+    : block        # processBlock
+    | litvardecs   # processGlobalVarDecs
+    ;
+
+root: global_stm+ EOF;

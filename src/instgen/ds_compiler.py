@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import typing as ty
+
 import antlr4
 
 from dialog_script_vm.vm import DialogScriptProgram
@@ -8,7 +10,7 @@ from .ds_instgen import DialogScriptMainVisitor
 
 
 def program_from_file(filename: str, encoding: str = 'UTF-8') -> \
-        DialogScriptProgram:
+        ty.Tuple[DialogScriptProgram, dict[str, int]]:
     """
     This function generates a DialogScript VM from a given file
 
@@ -22,5 +24,6 @@ def program_from_file(filename: str, encoding: str = 'UTF-8') -> \
     tokens = antlr4.CommonTokenStream(lexer)
     parser = DialogScriptParser(tokens)
     visitor = DialogScriptMainVisitor()
+    visitor.visit(parser.root())
 
-    return visitor.visit(parser.root())
+    return visitor.program, visitor.gvar_mapping

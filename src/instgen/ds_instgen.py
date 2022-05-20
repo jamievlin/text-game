@@ -10,17 +10,63 @@ from .utils import parse_string_node
 
 
 class DialogScriptMainVisitor(DialogScriptVisitor):
-    def visitRoot(
-            self,
-            ctx: DialogScriptParser.RootContext) -> \
-            DialogScriptProgram:
-        program_blocks = []
-        for block in ctx.block():  # type: DialogScriptParser.BlockContext
-            block_name = str(block.IDENTIFIER())
-            block_inst = block.accept(DialogScriptBlockVisitor())
-            program_blocks.append((block_name, block_inst))
+    def __init__(self):
+        self._program_blocks: list[ty.Tuple[str, DialogScriptBlock]] = []
+        self._gvar_mapping: dict[str, int] = {}
+        self._gvar_init = []
+        self.processed = False
 
-        return DialogScriptProgram(program_blocks)
+    @property
+    def program(self):
+        if not self.processed:
+            raise RuntimeWarning('Program is not yet processed')
+        return DialogScriptProgram(self._program_blocks, self._gvar_init)
+
+    @property
+    def gvar_mapping(self):
+        if not self.processed:
+            raise RuntimeWarning('Program is not yet processed')
+        return self._gvar_mapping
+
+    def visitRoot(self, ctx: DialogScriptParser.RootContext):
+        gstm: DialogScriptParser.Global_stmContext
+        for gstm in ctx.global_stm():
+            gstm.accept(self)
+        self.processed = True
+
+    def visitProcessBlock(self, ctx: DialogScriptParser.ProcessBlockContext):
+        block: DialogScriptParser.BlockContext = ctx.block()
+        block_name = str(block.IDENTIFIER())
+        block_inst = block.accept(DialogScriptBlockVisitor())
+        self._program_blocks.append((block_name, block_inst))
+
+    def visitProcessGlobalVarDecs(
+            self,
+            ctx: DialogScriptParser.ProcessGlobalVarDecsContext):
+        next_gvar_number = len(self._gvar_mapping)  # starts at 0
+        lit_vardec: DialogScriptParser.LitvardecsContext = ctx.litvardecs()
+        name = str(lit_vardec.IDENTIFIER())
+
+        if name in self._gvar_mapping:
+            raise RuntimeError('Name cannot be duplicate!')
+        self._gvar_mapping[name] = next_gvar_number
+
+        init_val = None
+        if lit_vardec.EQ_ASSIGN() is not None:
+            # there's an assignment
+            init_val = lit_vardec.literal().accept(
+                DialogScriptLiteralVisitor())
+        self._gvar_init.append(init_val)
+
+
+class DialogScriptLiteralVisitor(DialogScriptVisitor):
+    def visitLiteral(self, ctx: DialogScriptParser.LiteralContext):
+        if ctx.NUMBERS() is not None:
+            return int(str(ctx.NUMBERS()))
+        elif ctx.STRING_LIT() is not None:
+            return parse_string_node(ctx.STRING_LIT())
+        else:
+            raise RuntimeError('Literal should have a value!')
 
 
 class DialogScriptBlockVisitor(DialogScriptVisitor):
