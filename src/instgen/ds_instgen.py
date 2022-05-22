@@ -103,6 +103,8 @@ class StatementVisitor(DialogScriptVisitor):
             insts = ctx.opts().accept(OptionsVisitor())
         elif ctx.NOP() is not None:
             insts = inst.DialogScriptNop()
+        elif ctx.assignment() is not None:
+            insts = ctx.assignment().accept(AssignmentVisitor())
         elif ctx.EXIT() is not None:
             insts = inst.DialogScriptExitInst()
 
@@ -112,6 +114,29 @@ class StatementVisitor(DialogScriptVisitor):
             self.dialog_script_block.add_instruction(insts)
         elif isinstance(insts, DialogScriptBlock):
             self.dialog_script_block.extend_dsb(insts)
+
+
+class AssignmentVisitor(DialogScriptVisitor):
+    def visitAssignment(self, ctx:DialogScriptParser.AssignmentContext):
+        var = str(ctx.IDENTIFIER())
+        insts = ctx.value().accept(ValuePushVisitor())
+
+        insts.append(inst.DialogScriptWriteVar(var))
+        return insts
+
+
+class ValuePushVisitor(DialogScriptVisitor):
+    """
+    Generates instructions that pushes a value into the stack
+    """
+    def visitValue(self, ctx:DialogScriptParser.ValueContext):
+        if ctx.literal() is not None:
+            return ctx.literal().accept(self)
+
+    def visitLiteral(self, ctx:DialogScriptParser.LiteralContext) -> \
+            ty.List[inst.DialogScriptInstruction]:
+        lit = ctx.accept(DialogScriptLiteralVisitor())
+        return [inst.DialogScriptPushLiteral(lit)]
 
 
 class SayVisitor(DialogScriptVisitor):
