@@ -83,6 +83,8 @@ statement
     : goto
     | say
     | opts
+    | assignment
+    | value
     | NOP
     | EXIT
     ;
@@ -93,6 +95,12 @@ block:
     END STM_END;
 
 literal: NUMBERS | STRING_LIT;
+
+value
+    : literal
+    ;
+
+assignment: IDENTIFIER EQ_ASSIGN value;
 
 vardecs:
     LET IDENTIFIER
