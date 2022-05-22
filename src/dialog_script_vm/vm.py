@@ -2,7 +2,7 @@
 import typing as ty
 
 from . import instructions as inst
-from .vm_context import DialogScriptVMContext
+from .vm_context import DialogScriptVMContext, TValue
 
 
 class DialogScriptBlock:

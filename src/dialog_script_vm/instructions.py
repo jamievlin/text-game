@@ -2,7 +2,9 @@
 
 from abc import ABC, abstractmethod
 import typing as ty
-from .vm_context import DialogScriptVMContext
+from .vm_context import DialogScriptVMContext, TLiteral
+
+
 
 
 class DialogOption:

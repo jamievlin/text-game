@@ -10,7 +10,7 @@ from .ds_instgen import DialogScriptMainVisitor
 
 
 def program_from_file(filename: str, encoding: str = 'UTF-8') -> \
-        ty.Tuple[DialogScriptProgram, dict[str, int]]:
+        ty.Tuple[DialogScriptProgram, dict[str, any]]:
     """
     This function generates a DialogScript VM from a given file
 
