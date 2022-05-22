@@ -21,5 +21,21 @@ class DialogScriptVMContext:
     def push(self, val):
         self.mem_stack.append(val)
 
-    def pop(self):
-        self.mem_stack.pop()
+    def pop(self) -> TValue:
+        return self.mem_stack.pop()
+
+    def load_var(self, var: str) -> TValue:
+        if var in self.global_vars:
+            return self.global_vars[var]
+
+        raise RuntimeError(f'Variable {var} not found in VM context!')
+
+    def save_var(self, var: str, value: TValue):
+        # saving rule:
+        # save to highest context first, then globals
+        # otherwise create a new variable in highest context
+        if var in self.global_vars:
+            self.global_vars[var] = value
+            return
+
+        raise RuntimeError(f'Cannot save variable {var}!')
