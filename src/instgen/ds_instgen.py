@@ -12,21 +12,20 @@ from .utils import parse_string_node
 class DialogScriptMainVisitor(DialogScriptVisitor):
     def __init__(self):
         self._program_blocks: list[ty.Tuple[str, DialogScriptBlock]] = []
-        self._gvar_mapping: dict[str, int] = {}
-        self._gvar_init = []
+        self._gvar_template: dict[str, any] = {}
         self.processed = False
 
     @property
     def program(self):
         if not self.processed:
             raise RuntimeWarning('Program is not yet processed')
-        return DialogScriptProgram(self._program_blocks, self._gvar_init)
+        return DialogScriptProgram(self._program_blocks, self._gvar_template)
 
     @property
-    def gvar_mapping(self):
+    def gvar_template(self):
         if not self.processed:
             raise RuntimeWarning('Program is not yet processed')
-        return self._gvar_mapping
+        return self._gvar_template
 
     def visitRoot(self, ctx: DialogScriptParser.RootContext):
         gstm: DialogScriptParser.Global_stmContext
@@ -43,20 +42,18 @@ class DialogScriptMainVisitor(DialogScriptVisitor):
     def visitProcessGlobalVarDecs(
             self,
             ctx: DialogScriptParser.ProcessGlobalVarDecsContext):
-        next_gvar_number = len(self._gvar_mapping)  # starts at 0
         lit_vardec: DialogScriptParser.LitvardecsContext = ctx.litvardecs()
         name = str(lit_vardec.IDENTIFIER())
 
-        if name in self._gvar_mapping:
+        if name in self._gvar_template:
             raise RuntimeError('Name cannot be duplicate!')
-        self._gvar_mapping[name] = next_gvar_number
 
         init_val = None
         if lit_vardec.EQ_ASSIGN() is not None:
             # there's an assignment
             init_val = lit_vardec.literal().accept(
                 DialogScriptLiteralVisitor())
-        self._gvar_init.append(init_val)
+        self._gvar_template[name] = init_val
 
 
 class DialogScriptLiteralVisitor(DialogScriptVisitor):

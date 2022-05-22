@@ -26,4 +26,4 @@ def program_from_file(filename: str, encoding: str = 'UTF-8') -> \
     visitor = DialogScriptMainVisitor()
     visitor.visit(parser.root())
 
-    return visitor.program, visitor.gvar_mapping
+    return visitor.program, visitor.gvar_template

@@ -36,19 +36,19 @@ class DialogScriptProgram:
     def __init__(
             self,
             modules: list[tuple[str, DialogScriptBlock]] = None,
-            globalvar_init: list = None
+            gvar_template: dict[str, TValue] = None
     ):
         modules = modules or []
-        globalvar_init = globalvar_init or []
+        gvar_template = gvar_template or {}
         self.modules: dict[str, DialogScriptBlock] = dict(modules)
-        self.globalvar_init = globalvar_init
+        self.gvar_template = gvar_template
 
 
 class DialogScriptVM:
     def __init__(self, program: DialogScriptProgram):
         self._last_block = 'start'
         self.program = program
-        self.context = DialogScriptVMContext()
+        self.context = DialogScriptVMContext(program.gvar_template)
 
     def execute(self):
         while self.context.alive:
