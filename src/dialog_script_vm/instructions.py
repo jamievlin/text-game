@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
-from abc import ABC, abstractmethod
 import typing as ty
+from abc import ABC, abstractmethod
+
 from .vm_context import DialogScriptVMContext, TLiteral
-
-
 
 
 class DialogOption:
@@ -97,6 +96,7 @@ class DialogScriptWriteVar(DialogScriptInstruction):
     def execute(self, prog: DialogScriptVMContext):
         val = prog.pop()
         prog.save_var(self._var, val)
+
 
 class DialogScriptPop(DialogScriptInstruction):
     def execute(self, prog: DialogScriptVMContext):
