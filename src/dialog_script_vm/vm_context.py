@@ -36,6 +36,33 @@ class DialogScriptVMContext:
 
         raise RuntimeError(f'Variable {var} not found in VM context!')
 
+    def load_vars(self, variables: set[str]) -> dict[str, TValue]:
+        vars_to_load = set(variables)
+        result_vars = \
+            {key: self.global_vars[key]
+             for key in vars_to_load if key in self.global_vars}
+        vars_to_load = {
+            v
+            for v in vars_to_load
+            if v not in self.global_vars}
+
+        for scope in reversed(self.local_vars):
+            if not vars_to_load:
+                return result_vars
+            result_vars = \
+                result_vars | \
+                {key: scope[key] for key in vars_to_load
+                 if key in scope}
+            vars_to_load = {
+                v
+                for v in vars_to_load
+                if v not in scope}
+
+        if vars_to_load:
+            unloaded_vars = ', '.join(vars_to_load)
+            raise RuntimeError(f'Variables {unloaded_vars} cannot be loaded!')
+        return result_vars
+
     def save_var(self, var: str, value: TValue):
         # saving rule:
         # save to highest context first, then globals
