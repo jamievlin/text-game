@@ -10,7 +10,7 @@ fragment CHARACTER: [a-zA-Z];
 fragment NUMBER: [0-9];
 
 fragment UNDERSCORE: '_';
-fragment ESCAPE_SEQ: '\\'[btnfr"'\\];
+fragment ESCAPE_SEQ: '\\'[btnfr"'\\$];
 
 fragment STRING_CHARACTER: ~["\\\r\n] | ESCAPE_SEQ;
 fragment STRING_ML_CHARCTER: ~["\\] | ESCAPE_SEQ;

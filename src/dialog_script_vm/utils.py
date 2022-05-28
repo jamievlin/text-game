@@ -7,6 +7,9 @@ from .vm_context import DialogScriptVMContext
 RE_MATCH_VARTEMPLATE = \
     re.compile(r'(?P<pref>^|[^\\])(?P<var>\$(?P<varname>[a-zA-Z_]\w*))')
 
+RE_MATCH_DEESCAPE = \
+    re.compile(r'\\([\\\"$])')
+
 
 def process_template_text(text: str, prog: DialogScriptVMContext) -> str:
     var_names = RE_MATCH_VARTEMPLATE.findall(text)
@@ -20,4 +23,7 @@ def process_template_text(text: str, prog: DialogScriptVMContext) -> str:
         # as the text "o$var" is replaced by "o500".
         return match_obj.group('pref') + variables[match_obj.group('varname')]
 
-    return RE_MATCH_VARTEMPLATE.sub(match_vars, text)
+    final_str = RE_MATCH_VARTEMPLATE.sub(match_vars, text)
+    final_str = RE_MATCH_DEESCAPE.sub(r"\1", final_str)
+
+    return final_str
