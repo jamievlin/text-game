@@ -3,6 +3,7 @@
 import typing as ty
 from abc import ABC, abstractmethod
 
+from .utils import process_template_text
 from .vm_context import DialogScriptVMContext, TLiteral
 
 
@@ -25,7 +26,7 @@ class DialogScriptSaysInst(DialogScriptInstruction):
 
     def execute(self, prog: DialogScriptVMContext):
         print(f'{self.character}:')
-        print(f'{self.text}')
+        print(process_template_text(self.text, prog))
 
 
 class DialogScriptExitInst(DialogScriptInstruction):
