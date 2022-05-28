@@ -15,8 +15,10 @@ class DialogScriptVMContext:
 
         self.global_vars = \
             gvar_template.copy() \
-            if gvar_template is not None \
-            else {}
+                if gvar_template is not None \
+                else {}
+
+        self.local_vars: list[dict[str, TValue]] = [{}]
 
     def push(self, val):
         self.mem_stack.append(val)
@@ -28,14 +30,22 @@ class DialogScriptVMContext:
         if var in self.global_vars:
             return self.global_vars[var]
 
+        for scope in reversed(self.local_vars):
+            if var in scope:
+                return scope[var]
+
         raise RuntimeError(f'Variable {var} not found in VM context!')
 
     def save_var(self, var: str, value: TValue):
         # saving rule:
         # save to highest context first, then globals
         # otherwise create a new variable in highest context
+        for scope in reversed(self.local_vars):
+            if var in scope:
+                scope[var] = value
+
         if var in self.global_vars:
             self.global_vars[var] = value
             return
 
-        raise RuntimeError(f'Cannot save variable {var}!')
+        self.local_vars[-1][var] = value
