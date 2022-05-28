@@ -39,6 +39,9 @@
         <touch file="${dialogScript.output}/__init__.py" />
     </target>
 
+    <target name="build" depends="generate-sources">
+    </target>
+
     <target name="regen-sources" depends="clean" >
         <antcall target="generate-sources" />
     </target>
