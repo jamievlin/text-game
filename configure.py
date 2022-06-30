@@ -10,10 +10,7 @@ from argparse import (
 
 
 def parse_args():
-    default_py = \
-        'python.exe' \
-        if sys.platform == 'win32' \
-        else 'python3'
+    default_py = sys.executable
 
     parser = ArgumentParser(
         formatter_class=ArgumentDefaultsHelpFormatter)
