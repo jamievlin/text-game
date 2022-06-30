@@ -33,3 +33,5 @@ jobs:
         run: ant generate-sources
       - name: lint
         run: ant lint
+      - name: test
+        run: ant test
