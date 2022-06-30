@@ -1,18 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project>
-    <property file="build.local.properties" />
+    <property file="build.local.properties"/>
 
-    <property name="src" value="src" />
-    <property name="src.generated" value="${src}/generated" />
+    <property name="src" value="src"/>
+    <property name="src.generated" value="${src}/generated"/>
     <property name="test_src" value="tests"/>
 
-    <property name="dialogScript.output" value="${src.generated}/dialog_script" />
+    <property name="dialogScript.output" value="${src.generated}/dialog_script"/>
+
+    <property name="requirements.main" value="requirements.txt"/>
+    <property name="requirements.dev" value="requirements.dev.txt"/>
+
+    <target name="set-systemmode" if="python3.isvenv">
+        <property name="args.pip.user" value=""/>
+    </target>
+    <target name="set-usermode" unless="python3.isvenv">
+        <property name="args.pip.user" value="--user"/>
+    </target>
+
+    <target name="install-pip-deps" depends="set-systemmode,set-usermode">
+        <exec executable="${python3.exec}"
+              failonerror="true">
+            <arg line="-m pip install -U ${args.pip.user}"/>
+            <arg value="-r"/>
+            <arg value="${requirements.main}"/>
+
+            <arg value="-r"/>
+            <arg value="${requirements.dev}"/>
+
+        </exec>
+    </target>
 
     <target name="configure">
         <exec executable="${python3.exec}"
               failonerror="true">
-            <arg value="configure.py" />
-            <arg value="--antlr4-jar=${antlr4.jar}" />
+            <arg value="configure.py"/>
+            <arg value="--antlr4-jar=${antlr4.jar}"/>
             <arg value="--python3-exec=${python3.exec}"/>
         </exec>
     </target>
