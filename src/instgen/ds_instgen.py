@@ -129,14 +129,39 @@ class ValuePushVisitor(DialogScriptVisitor):
     """
     Generates instructions that pushes a value into the stack
     """
-    def visitValue(self, ctx:DialogScriptParser.ValueContext):
-        if ctx.literal() is not None:
-            return ctx.literal().accept(self)
 
-    def visitLiteral(self, ctx:DialogScriptParser.LiteralContext) -> \
+    def visitProcessLiteral(
+            self,
+            ctx: DialogScriptParser.ProcessLiteralContext):
+        return ctx.literal().accept(self)
+
+    def visitProcessBinaryOp(
+            self,
+            ctx: DialogScriptParser.ProcessBinaryOpContext) -> \
+            ty.List[inst.DialogScriptInstruction]:
+        insts = []
+        val1, val2 = ctx.value()
+        insts.extend(val1.accept(self))
+        insts.extend(val2.accept(self))
+
+        insts.append(ctx.binary_op().accept(BinaryOpVisitor()))
+        return insts
+
+    def visitLiteral(self, ctx: DialogScriptParser.LiteralContext) -> \
             ty.List[inst.DialogScriptInstruction]:
         lit = ctx.accept(DialogScriptLiteralVisitor())
         return [inst.DialogScriptPushLiteral(lit)]
+
+
+class BinaryOpVisitor(DialogScriptVisitor):
+    def visitBinary_op(self, ctx: DialogScriptParser.Binary_opContext) -> \
+            inst.DialogScriptInstruction:
+        text = ctx.getText()
+
+        match text:
+            case '==':
+                return inst.DialogScriptEqualityOp()
+        raise ValueError(f'Operator {ctx.getText()} unknown!')
 
 
 class SayVisitor(DialogScriptVisitor):

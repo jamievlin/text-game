@@ -40,6 +40,9 @@ LET: 'let';
 
 EQ_ASSIGN: '=';
 
+// operators
+EQ_OPERATOR: '==';
+
 // string literals
 INIT_IDENTIFIER_CHAR: CHARACTER | UNDERSCORE;
 fragment STRING_ML: '"""' STRING_ML_CHARCTER+ '"""';
@@ -67,6 +70,9 @@ option_stm:
     BEGIN OPTION NUMBERS STRING_LIT
     (statement STM_END)*
     END;
+
+binary_op
+    : EQ_OPERATOR;
 
 option
     : option_inert
@@ -97,7 +103,8 @@ block:
 literal: NUMBERS | STRING_LIT;
 
 value
-    : literal
+    : literal                   # processLiteral
+    | value binary_op value     # processBinaryOp
     ;
 
 assignment: IDENTIFIER EQ_ASSIGN value;
@@ -113,5 +120,6 @@ global_stm
     : block        # processBlock
     | litvardecs   # processGlobalVarDecs
     ;
+
 
 root: global_stm+ EOF;

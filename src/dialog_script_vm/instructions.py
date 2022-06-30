@@ -114,6 +114,19 @@ class DialogScriptPopMulti(DialogScriptInstruction):
         del prog.mem_stack[-self.count:]
 
 
+class DialogScriptEqualityOp(DialogScriptInstruction):
+    """
+    Pops the most recent two values from stack, and pushes True if
+    the two objects are equal, or false otherwise
+    """
+
+    def execute(self, prog: DialogScriptVMContext):
+        obj1 = prog.pop()
+        obj2 = prog.pop()
+        value = obj1 == obj2
+        prog.push(value)
+
+
 class DialogScriptOptInst(DialogScriptInstruction):
     def __init__(self, options: ty.List[DialogOption]):
         self.options = options
