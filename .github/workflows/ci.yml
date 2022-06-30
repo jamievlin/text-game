@@ -20,3 +20,7 @@ jobs:
       - uses: ./github/actions/initialize-runner
       - name: codegen
         run: ant generate-sources
+      - uses: actions/upload-artifact@v3
+        with:
+          name: codegen-results
+          path: src/generated
