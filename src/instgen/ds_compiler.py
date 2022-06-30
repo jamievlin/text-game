@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import typing as ty
 
 import antlr4
@@ -9,21 +10,34 @@ from generated.dialog_script.DialogScriptParser import DialogScriptParser
 from .ds_instgen import DialogScriptMainVisitor
 
 
-def program_from_file(filename: str, encoding: str = 'UTF-8') -> \
+def program_from_text(text: str) -> \
         ty.Tuple[DialogScriptProgram, dict[str, any]]:
     """
-    This function generates a DialogScript VM from a given file
+    This function generates a DialogScript VM from a given text
 
-    :param filename: name of input file
-    :param encoding: Encoding of the file, defaults to UTF-8
+    :param text: text of input file
     :return: A DialogScriptProgram that can be executed in a VM
     """
-    with open(filename, 'r', encoding=encoding) as infile:
-        istream = antlr4.InputStream(infile.read())
-        lexer = DialogScriptLexer(istream)
+    istream = antlr4.InputStream(text)
+    lexer = DialogScriptLexer(istream)
     tokens = antlr4.CommonTokenStream(lexer)
     parser = DialogScriptParser(tokens)
     visitor = DialogScriptMainVisitor()
     visitor.visit(parser.root())
 
     return visitor.program, visitor.gvar_template
+
+
+def program_from_file(
+        filename: str | os.PathLike,
+        encoding: str = 'UTF-8') -> \
+        ty.Tuple[DialogScriptProgram, dict[str, any]]:
+    """
+    Generates a DialogScript VM from a given file
+
+    :param filename: Path to a given file
+    :param encoding: Encoding of the file. Defaults to UTF-8.
+    :return: A DialogScriptProgram that can be executed in a VM
+    """
+    with open(filename, 'r', encoding=encoding) as infile:
+        return program_from_text(infile.read())
