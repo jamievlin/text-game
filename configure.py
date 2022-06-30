@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import pathlib
 import sys
 import typing as ty
 from argparse import (
@@ -32,9 +33,17 @@ def parse_args():
 
 def main():
     args = parse_args()
+    antlr4_path = pathlib.Path(args.antlr4_jar)
+    python3_path = pathlib.Path(args.python3_exec)
+
+    if not antlr4_path.is_file():
+        raise RuntimeWarning('ANTLR4 jar not found')
+    if not python3_path.is_file():
+        raise RuntimeWarning('Python3 path not found')
+
     properties: dict[str, ty.Callable[[], str]] = {
-        'antlr4.jar': lambda: args.antlr4_jar,
-        'python3.exec': lambda: args.python3_exec
+        'antlr4.jar': lambda: str(antlr4_path).replace('\\', '\\\\'),
+        'python3.exec': lambda: str(python3_path).replace('\\', '\\\\'),
     }
     with open('build.local.properties', 'w', encoding='utf-8') as prop_file:
         prop_file.write(
