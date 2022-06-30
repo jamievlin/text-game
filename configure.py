@@ -12,6 +12,8 @@ from argparse import (
 def parse_args():
     default_py = sys.executable
 
+    # see https://peps.python.org/pep-0405/#specification
+    default_isvenv: bool = sys.prefix != sys.base_prefix
     parser = ArgumentParser(
         formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument(
@@ -25,7 +27,16 @@ def parse_args():
         help='python3 file location',
         default=default_py
     )
+    parser.add_argument(
+        '--is-venv', type=bool,
+        help='is virtualenv or not. If not, check from specified python',
+        default=default_isvenv
+    )
     return parser.parse_args()
+
+
+def lowercase_bool(value: bool) -> str:
+    return 'true' if value else 'false'
 
 
 def main():
@@ -41,6 +52,7 @@ def main():
     properties: dict[str, ty.Callable[[], str]] = {
         'antlr4.jar': lambda: str(antlr4_path).replace('\\', '\\\\'),
         'python3.exec': lambda: str(python3_path).replace('\\', '\\\\'),
+        'python3.isvenv': lambda: lowercase_bool(args.is_venv)
     }
     with open('build.local.properties', 'w', encoding='utf-8') as prop_file:
         prop_file.write(
