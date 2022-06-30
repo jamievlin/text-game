@@ -70,6 +70,7 @@ class DialogScriptVMContext:
         for scope in reversed(self.local_vars):
             if var in scope:
                 scope[var] = value
+                return
 
         if var in self.global_vars:
             self.global_vars[var] = value
