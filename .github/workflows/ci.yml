@@ -24,3 +24,16 @@ jobs:
         with:
           name: codegen-results
           path: src/generated
+
+  tests:
+    needs: codegen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./github/actions/initialize-runner
+      - uses: actions/download-artifact@v3
+        with:
+          name: codegen-results
+          path: src/generated
+      - name: test
+        run: ant test
