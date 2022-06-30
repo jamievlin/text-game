@@ -1,0 +1,13 @@
+name: initialize-env
+description: Initialize workflow
+runs:
+  using: 'composite'
+  steps:
+    - uses: ./github/actions/initialize-env
+    - name: configure script
+      shell: bash
+      run: >
+        python3 configure.py --antlr4-jar=/tmp/antlr-4.10.1-complete.jar --is-venv=False
+    - name: set up environment
+      shell: bash
+      run: ant install-pip-deps
