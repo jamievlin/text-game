@@ -65,6 +65,9 @@
         <exec
                 executable="${python3.exec}"
                 failonerror="true">
+            <env
+                    key="PYTHONPATH"
+                    path="${test_src};${src}"/>
             <arg value="-m"/>
             <arg value="pytest"/>
             <arg value="${test_src}"/>
