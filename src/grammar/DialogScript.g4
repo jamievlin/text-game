@@ -18,6 +18,14 @@ fragment STRING_ML_CHARCTER: ~["\\] | ESCAPE_SEQ;
 fragment SEMICOLON: ';';
 STM_END: SEMICOLON;
 
+PARENTHESES_BEGIN: '(';
+PARENTHESES_END: ')';
+
+// constants
+fragment TRUE: 'true';
+fragment FALSE: 'false';
+BOOLEAN_CONST: TRUE | FALSE;
+
 // keywords
 SAY: 'say' | 'says';
 BEGIN: 'begin';
@@ -100,7 +108,7 @@ block:
     (statement STM_END)*
     END STM_END;
 
-literal: NUMBERS | STRING_LIT;
+literal: NUMBERS | BOOLEAN_CONST | STRING_LIT;
 
 value
     : literal                   # processLiteral
