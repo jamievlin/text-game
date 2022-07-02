@@ -112,6 +112,7 @@ literal: NUMBERS | BOOLEAN_CONST | STRING_LIT;
 
 value
     : literal                   # processLiteral
+    | PARENTHESES_BEGIN value PARENTHESES_END   # processParentheses
     | value binary_op value     # processBinaryOp
     ;
 

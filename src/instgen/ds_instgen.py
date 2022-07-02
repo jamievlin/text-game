@@ -60,6 +60,14 @@ class DialogScriptLiteralVisitor(DialogScriptVisitor):
     def visitLiteral(self, ctx: DialogScriptParser.LiteralContext):
         if ctx.NUMBERS() is not None:
             return int(str(ctx.NUMBERS()))
+        elif ctx.BOOLEAN_CONST() is not None:
+            match ctx.getText():
+                case 'true':
+                    return True
+                case 'false':
+                    return False
+                case _:
+                    raise ValueError('Boolean value must be TRUE|FALSE')
         elif ctx.STRING_LIT() is not None:
             return parse_string_node(ctx.STRING_LIT())
         else:
@@ -129,6 +137,11 @@ class ValuePushVisitor(DialogScriptVisitor):
     """
     Generates instructions that pushes a value into the stack
     """
+
+    def visitProcessParentheses(
+            self,
+            ctx:DialogScriptParser.ProcessParenthesesContext):
+        return ctx.value().accept(self)
 
     def visitProcessLiteral(
             self,
