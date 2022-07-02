@@ -114,17 +114,32 @@ class DialogScriptPopMulti(DialogScriptInstruction):
         del prog.mem_stack[-self.count:]
 
 
-class DialogScriptEqualityOp(DialogScriptInstruction):
+class ADialogScriptBinaryOp(DialogScriptInstruction):
+    """
+    An abstract class for instructions that pops the
+    last two elements from stack, and pushes a result
+    back to the stack.
+    """
+
+    @abstractmethod
+    def operate(self, left_val: TLiteral, right_val: TLiteral) -> TLiteral:
+        raise NotImplementedError()
+
+    def execute(self, prog: DialogScriptVMContext):
+        obj2 = prog.pop()
+        obj1 = prog.pop()
+        val = self.operate(obj1, obj2)
+        prog.push(val)
+
+
+class DialogScriptEqualityOp(ADialogScriptBinaryOp):
     """
     Pops the most recent two values from stack, and pushes True if
     the two objects are equal, or false otherwise
     """
 
-    def execute(self, prog: DialogScriptVMContext):
-        obj1 = prog.pop()
-        obj2 = prog.pop()
-        value = obj1 == obj2
-        prog.push(value)
+    def operate(self, left_val: TLiteral, right_val: TLiteral) -> TLiteral:
+        return left_val == right_val
 
 
 class DialogScriptOptInst(DialogScriptInstruction):
