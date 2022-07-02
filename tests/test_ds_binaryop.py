@@ -1,5 +1,4 @@
-from dialog_script_vm.vm import DialogScriptVM
-from instgen.ds_compiler import program_from_text
+from utils.utils import exec_from_text
 
 
 def test_ds_equality():
@@ -13,10 +12,7 @@ def test_ds_equality():
     end;
     """
 
-    prog, _ = program_from_text(program_text)
-    vm = DialogScriptVM(prog)
-    vm.execute()
-
+    vm = exec_from_text(program_text)
     gvars = vm.context.global_vars
     assert gvars['var1'] is False
     assert gvars['var2'] is True
