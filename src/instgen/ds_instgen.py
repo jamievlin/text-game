@@ -169,11 +169,13 @@ class ValuePushVisitor(DialogScriptVisitor):
 class BinaryOpVisitor(DialogScriptVisitor):
     def visitBinary_op(self, ctx: DialogScriptParser.Binary_opContext) -> \
             inst.DialogScriptInstruction:
-        text = ctx.getText()
+        if ctx.EQ_OPERATOR():
+            return inst.DialogScriptEqualityOp()
+        elif ctx.AND_OPERATOR():
+            return inst.DialogScriptAndOp()
+        elif ctx.OR_OPERATOR():
+            return inst.DialogScriptOrOp()
 
-        match text:
-            case '==':
-                return inst.DialogScriptEqualityOp()
         raise ValueError(f'Operator {ctx.getText()} unknown!')
 
 

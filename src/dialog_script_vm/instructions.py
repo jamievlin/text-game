@@ -142,6 +142,16 @@ class DialogScriptEqualityOp(ADialogScriptBinaryOp):
         return left_val == right_val
 
 
+class DialogScriptAndOp(ADialogScriptBinaryOp):
+    def operate(self, left_val: TLiteral, right_val: TLiteral) -> TLiteral:
+        return left_val and right_val
+
+
+class DialogScriptOrOp(ADialogScriptBinaryOp):
+    def operate(self, left_val: TLiteral, right_val: TLiteral) -> TLiteral:
+        return left_val or right_val
+
+
 class DialogScriptOptInst(DialogScriptInstruction):
     def __init__(self, options: ty.List[DialogOption]):
         self.options = options

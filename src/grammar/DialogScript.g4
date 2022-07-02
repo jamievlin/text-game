@@ -50,6 +50,8 @@ EQ_ASSIGN: '=';
 
 // operators
 EQ_OPERATOR: '==';
+AND_OPERATOR: '&&' | 'and';
+OR_OPERATOR: '||' | 'or';
 
 // string literals
 INIT_IDENTIFIER_CHAR: CHARACTER | UNDERSCORE;
@@ -80,7 +82,10 @@ option_stm:
     END;
 
 binary_op
-    : EQ_OPERATOR;
+    : EQ_OPERATOR
+    | AND_OPERATOR
+    | OR_OPERATOR
+    ;
 
 option
     : option_inert
